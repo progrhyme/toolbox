@@ -1,1 +1,1 @@
-export PATH="$PATH:~/gitrepos/tools/bin"
+export PATH="$PATH:$HOME/gitrepos/tools/bin"
