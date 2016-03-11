@@ -1,0 +1,69 @@
+#!/bin/bash
+
+__program=$(basename $0)
+__remote=${1:-}
+__branch=${2:-}
+
+if [ -z ${__remote} -o -z ${__branch} ]; then
+  pod2text $0
+  exit 1
+fi
+
+__exec() {
+  if [ ${VERBOSE:-} ]; then
+    echo '[EXEC]' $@
+  fi
+  $@
+  if [ ${VERBOSE:-} ]; then
+    echo '[DONE]' $@
+  fi
+}
+
+__die() {
+  echo $@
+  exit 1
+}
+
+echo "[START]"
+
+__exec git fetch || __die "Failed to fetch!"
+__exec git stash || __die "Failed to stash!"
+__exec git rebase ${__remote}/${__branch} ${__branch} \
+    || __die "Failed to rebase! <repository>=${__remote}/${__branch}" \
+             "<refspec>=${__branch}"
+__exec git push ${__remote} ${__branch} \
+  || __die "Failed to push! <repository>=${__remote} <refspec>=${__branch}"
+__exec git stash pop || __die "Failed to stash pop!"
+
+echo "[END] Finished."
+
+exit
+
+: <<'__EOF__'
+
+=encoding utf8
+
+=head1 NAME
+
+B<git-push-carefully> - git push in a careful manner to avoid failure
+
+=head1 SYNOPSYS
+
+  git-push-carefully <repository> <refspec>
+
+=head1 DESCRIPTION
+
+Execute B<git push> carefully as following way:
+
+Do B<git fetch>, B<git stash>, B<git rebase> beforehand.
+Then do B<git push>.
+Finally do B<git stash pop>.
+Abort any time when command failed.
+
+=head1 AUTHORS
+
+YASUTAKE Kiyoshi E<lt>yasutake.kiyoshi@gmail.com<gt>
+
+=cut
+
+__EOF__
