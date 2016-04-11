@@ -1,0 +1,47 @@
+#!/bin/bash
+
+set -eu
+
+label=$1
+_killed=""
+
+while true; do
+  pid=$(screen -ls | grep $label | awk -F. '{print $1}')
+  if [[ -z $pid ]]; then
+    if [[ -z $_killed ]]; then
+      echo "Not found session named '$1'"
+    fi
+    break
+  fi
+  kill $pid
+  _killed="yes"
+  echo "Killed screen process: $pid"
+  sleep 0.1
+done
+
+exit
+
+: <<'__EOF__'
+
+=encoding utf8
+
+=head1 NAME
+
+B<screen-kill-session> - Kill screen process by session name
+
+=head1 SYNOPSYS
+
+    screen-kill-session your-session
+
+=head1 DESCRIPTION
+
+blah blah blah.
+
+=head1 AUTHORS
+
+YASUTAKE Kiyoshi E<lt>yasutake.kiyoshi@gmail.comE<gt>
+
+=cut
+
+__EOF__
+
