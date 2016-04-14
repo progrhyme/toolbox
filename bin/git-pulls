@@ -1,0 +1,9 @@
+#!/bin/sh
+
+set -e
+
+remote=${1:-origin}
+branch=${2:-master}
+
+git pull $remote $branch
+git submodule update --init
