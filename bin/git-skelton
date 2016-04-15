@@ -1,0 +1,20 @@
+#!/bin/sh
+
+set -eu
+
+create() {
+  local prj=$1
+  mkdir $prj
+  cd $prj
+  git init
+  echo "# $prj" > README.md
+  cat <<EOS > .gitignore
+*.swp
+/tmp/
+EOS
+  git add .
+  git commit -m "1st commit"
+}
+
+create $1
+unset -f create
