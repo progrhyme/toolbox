@@ -17,4 +17,3 @@ EOS
 }
 
 create $1
-unset -f create
