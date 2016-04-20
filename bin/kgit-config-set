@@ -2,8 +2,8 @@
 
 set -euo pipefail
 
-git init
-kgit-config-set
+git config --add user.name key-amb
+git config --add user.email yasutake.kiyoshi@gmail.com
 
 exit
 
