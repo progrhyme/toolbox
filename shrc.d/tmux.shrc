@@ -1,2 +1,0 @@
-# bash or zsh
-alias tmux-new='tmux new-session \; new-window'
