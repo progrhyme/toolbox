@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+git init
+pgit-config-set
+
+exit
+
+: <<'__EOF__'
+
+=encoding utf8
+
+=head1 NAME
+
+B<script-name> - summary
+
+=head1 SYNOPSYS
+
+    script-name [options ...]
+
+=head1 DESCRIPTION
+
+blah blah blah.
+
+=head1 AUTHORS
+
+progrhyme E<lt>progrhyme@gmail.comE<gt>
+
+=cut
+
+__EOF__
+
