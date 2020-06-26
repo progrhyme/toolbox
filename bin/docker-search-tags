@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+#
+# Depends on `jq` CLI
+
+set -eu
+
+REGISTRY=${DOCKER_REGISTRY:-https://registry.hub.docker.com}
+repo=$1
+grep=${2:-}
+
+fetch_tags() {
+  # TODO: Use v2 API
+  curl -s "${REGISTRY}/v1/repositories/${repo}/tags" | jq -c -r '.tags | @csv'
+}
+
+echo "# Tags in $repo"
+
+if [[ -n "$grep" ]]; then
+  fetch_tags | grep "$grep"
+else
+  fetch_tags
+fi
