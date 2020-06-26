@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 #
-# Depends on `jq` CLI
+# Depends on `jq` CLI.
+# Take it into account to use https://github.com/genuinetools/reg
 
 set -eu
 
