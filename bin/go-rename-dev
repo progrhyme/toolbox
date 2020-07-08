@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+#
+# gorename for working directory
+#
+# Usage:
+#   go-rename-dev [PATH].FROM_NAME TO_NAME [OPTIONS]
+#
+# Examples:
+#   go-rename-dev internal/logs.Log Logging
+#   # gorename -from '"${module}/intenal/logs".Log' -to Logging
+#
+#   go-rename-dev .Conf Config
+#   # gorename -from '"${module}".Conf' -to Config
+#
+# Depends on followings:
+# - `gorename` CLI
+# - go.mod
+
+set -euo pipefail
+
+MODULE=$(head -1 go.mod | awk '{print $2}')
+
+if [[ -z "${1:-}" && -z "${2:-}" ]]; then
+  cat <<EOHELP
+Usage:
+  go-rename-dev [PATH].FROM_NAME TO_NAME [OPTIONS]
+EOHELP
+  exit 1
+fi
+
+from="$1"
+shift
+path=${from%%.*}
+module_path="$MODULE"
+if [[ -n "$path" ]]; then
+  module_path="$MODULE/$path"
+fi
+name=${from#*.}
+
+to="$1"
+shift
+
+TMPD=$(mktemp -d)
+TMP_MOD_DIR="$TMPD/src/$MODULE"
+mkdir -p $(dirname "$TMP_MOD_DIR")
+ln -s "$(pwd)" "$TMP_MOD_DIR"
+
+set -x
+GOPATH="$TMPD" gorename -from "\"$module_path\".$name" -to $to "$@"
+set +x
+
+# Needed because gorename internally downloads dependent packages as Read-Only
+chmod +w -R $TMPD
+
+rm -rf $TMPD
+
+exit 0
+
